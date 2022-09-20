@@ -1,0 +1,184 @@
+
+blueprint:
+  name: Hydro-Québec Crédits Hivernaux
+  description: |
+    # Gestion des événements de crédit hivernal d'Hydro-Québec.
+    
+    Ce blueprint offre les bases pour faire la gestion des événements de pointes critiques dans le cadre du programme de [crédit hivernal d'Hydro-Québec](https://www.hydroquebec.com/residentiel/espace-clients/tarifs/option-credit-hivernal.html). Il a été créé pour fonctionner avec le projet [Hydroqc](https://hydroqc.ca) qui extrait les données de votre compte à partir du portail client d'Hydro-Québec.
+
+    ## Configuration
+
+    ### Entités de temps et de criticité de la période.
+    Les valeurs des 5 premières configurations seront autoremplies si le nom de votre contrat dans votre configuration hydroqc est "maison". Autrement vous devrez sélectionner les entités correspondantes.
+
+    ### Actions
+
+    Définition des actions à effectuer dans Home-Assistant lors de chaque début et fin de périodes.
+
+    Vous trouverez plus de détail sur les logiques applicables pour les crédits hivernaux dans notre [documentation](https://hydroqc.ca/en/docs/winter-credits/).
+
+  domain: automation
+  input:
+    peak_start:
+      name: Début pointe
+      description: Début de la période de pointe (sensor.hydroqc_maison_next_peak_start)
+      default: sensor.hydroqc_maison_next_peak_start
+      selector:
+        entity:
+          integration: mqtt
+          device_class: timestamp
+          domain: sensor
+    peak_end:
+      name: Fin pointe
+      description: Fin de la période de pointe (sensor.hydroqc_maison_next_peak_end)
+      default: sensor.hydroqc_maison_next_peak_end
+      selector:
+        entity:
+          integration: mqtt
+          device_class: timestamp
+          domain: sensor
+    anchor_start:
+      name: Début ancrage
+      description: Début de la période d'ancrage (sensor.hydroqc_maison_next_anchor_start)
+      default: sensor.hydroqc_maison_next_anchor_start
+      selector:
+        entity:
+          integration: mqtt
+          device_class: timestamp
+          domain: sensor
+    anchor_end:
+      name: Fin ancrage
+      description: Fin de la période d'ancrage (sensor.hydroqc_maison_next_anchor_end)
+      default: sensor.hydroqc_maison_next_anchor_end
+      selector:
+        entity:
+          integration: mqtt
+          device_class: timestamp
+          domain: sensor
+    critical:
+      name: Indicateur Critique
+      description: Indicateur de pointe critique (binary_sensor.hydroqc_maison_next_peak_period_critical)
+      default: binary_sensor.hydroqc_maison_next_peak_period_critical
+      selector:
+        entity:
+          integration: mqtt
+          domain: binary_sensor
+
+    critical_peak_start_action:
+      name: Action début pointe critique
+      description: Actions à effectuer au début de la période de pointe critique pour réduire votre consommation électrique.
+      selector:
+        action: {}
+    critical_peak_end_action:
+      name: Action fin pointe critique
+      description: Actions à effectuer à la fin de la période de pointe critique pour rétablir votre consommation normale.
+      selector:
+        action: {}
+    critical_anchor_start_action:
+      name: (Optionnel) Action début période ancrage critique
+      description: Actions à effectuer au début d'une période d'ancrage précédent une pointe critique
+      selector:
+        action: {}
+    critical_anchor_end_action:
+      name: (Optionnel) Action fin période ancrage critique
+      description: Actions à effectuer à la fin d'une période d'ancrage précédent une pointe critique
+      selector:
+        action: {}
+    regular_peak_start_action:
+      name: (Optionnel) Action début pointe régulière
+      description: Actions à effectuera au début d'une période de pointe non-critique
+      selector:
+        action: {}
+    regular_peak_end_action:
+      name: (Optionnel) Action fin pointe régulière
+      description: Actions à effectuer à la fin d'une période de pointe non-critique
+      selector:
+        action: {}
+    regular_anchor_start_action:
+      name: (Optionnel) Action début période ancrage réguliere
+      description: Actions à effectuer au début d'une période d'ancrage précédent une pointe non-critique
+      selector:
+        action: {}
+    regular_anchor_end_action:
+      name: (Optionnel) Action fin période ancrage réguliere
+      description: Actions à effectuer à la fin d'une période d'ancrage précédent une pointe non-critique
+      selector:
+        action: {}
+
+mode: single
+trigger:
+  - platform: time
+    at: !input peak_start
+    id: peak_start_trigger
+  - platform: time
+    at: !input peak_end
+    id: peak_end_trigger
+  - platform: time
+    at: !input anchor_start
+    id: anchor_start_trigger
+  - platform: time
+    at: !input anchor_end
+    id: anchor_end_trigger
+action:
+  - choose:
+      - conditions:
+          - condition: trigger
+            id: peak_start_trigger
+        sequence:
+          - choose:
+              - conditions:
+                  - condition: state
+                    entity_id: !input critical
+                    state: "on"
+                sequence: !input critical_peak_start_action
+              - conditions:
+                  - condition: state
+                    entity_id: !input critical
+                    state: "off"
+                sequence: !input regular_peak_start_action
+      - conditions:
+          - condition: trigger
+            id: peak_end_trigger
+        sequence:
+          - choose:
+              - conditions:
+                  - condition: state
+                    entity_id: !input critical
+                    state: "on"
+                sequence: !input critical_peak_end_action
+              - conditions:
+                  - condition: state
+                    entity_id: !input critical
+                    state: "off"
+                sequence: !input regular_peak_end_action
+      - conditions:
+          - condition: trigger
+            id: anchor_start_trigger
+        sequence:
+          - choose:
+              - conditions:
+                  - condition: state
+                    entity_id: !input critical
+                    state: "on"
+                sequence: !input critical_anchor_start_action
+              - conditions:
+                  - condition: state
+                    entity_id: !input critical
+                    state: "off"
+                sequence: !input regular_anchor_start_action
+
+      - conditions:
+          - condition: trigger
+            id: anchor_end_trigger
+        sequence:
+          - choose:
+              - conditions:
+                  - condition: state
+                    entity_id: !input critical
+                    state: "on"
+                sequence: !input critical_anchor_end_action
+              - conditions:
+                  - condition: state
+                    entity_id: !input critical
+                    state: "off"
+                sequence: !input regular_anchor_end_action
