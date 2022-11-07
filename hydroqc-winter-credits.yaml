@@ -67,41 +67,49 @@ blueprint:
     critical_peak_start_action:
       name: Action début pointe critique
       description: Actions à effectuer au début de la période de pointe critique pour réduire votre consommation électrique.
+      default: []
       selector:
         action: {}
     critical_peak_end_action:
       name: Action fin pointe critique
       description: Actions à effectuer à la fin de la période de pointe critique pour rétablir votre consommation normale.
+      default: []
       selector:
         action: {}
     critical_anchor_start_action:
       name: (Optionnel) Action début période ancrage critique
       description: Actions à effectuer au début d'une période d'ancrage précédent une pointe critique
+      default: []
       selector:
         action: {}
     critical_anchor_end_action:
       name: (Optionnel) Action fin période ancrage critique
       description: Actions à effectuer à la fin d'une période d'ancrage précédent une pointe critique
+      default: []
       selector:
         action: {}
     regular_peak_start_action:
       name: (Optionnel) Action début pointe régulière
       description: Actions à effectuera au début d'une période de pointe non-critique
+      default: []
       selector:
         action: {}
     regular_peak_end_action:
       name: (Optionnel) Action fin pointe régulière
       description: Actions à effectuer à la fin d'une période de pointe non-critique
+      default: []
       selector:
         action: {}
     regular_anchor_start_action:
       name: (Optionnel) Action début période ancrage réguliere
       description: Actions à effectuer au début d'une période d'ancrage précédent une pointe non-critique
+      default: []
       selector:
         action: {}
     regular_anchor_end_action:
       name: (Optionnel) Action fin période ancrage réguliere
       description: Actions à effectuer à la fin d'une période d'ancrage précédent une pointe non-critique
+      default: []
       selector:
         action: {}
 
