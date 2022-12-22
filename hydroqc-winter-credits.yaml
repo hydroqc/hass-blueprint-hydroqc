@@ -153,7 +153,7 @@ blueprint:
       selector:
         action: {}
   source_url: https://raw.githubusercontent.com/hydroqc/hass-blueprint-hydroqc/main/hydroqc-winter-credits.yaml
-mode: single
+mode: parallel
 trigger:
 - platform: time
   at: !input pre_heat
