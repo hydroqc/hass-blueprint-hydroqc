@@ -14,7 +14,7 @@ blueprint:
 
     ### Entités de temps et de criticité de la période.
 
-    Les valeurs des 5 premières configurations seront autoremplies si le nom de votre
+    Les valeurs des premières configurations seront autoremplies si le nom de votre
     contrat dans votre configuration hydroqc est "maison". Autrement vous devrez sélectionner
     les entités correspondantes.
 
@@ -27,14 +27,14 @@ blueprint:
 
 
     Vous trouverez plus de détail sur les logiques applicables pour les crédits hivernaux
-    dans notre [documentation](https://hydroqc.ca/en/docs/winter-credits/).
+    dans notre [documentation](https://hydroqc.ca/fr/docs/winter-credits/).
 
     '
   domain: automation
   input:
     pre_heat:
       name: Début pré-chauffage
-      description: Moment avant une pointe critique où nous voulons augmenteré le chauffage de la résidence en vu de la pointe. Cette période se termine lorsque la pointe critique commence.
+      description: Moment avant une pointe critique où nous voulons augmenter le chauffage de la résidence en vu de la pointe. Cette période se termine lorsque la pointe critique commence.
       default: sensor.hydroqc_maison_next_pre_heat_start
       selector:
         entity:
