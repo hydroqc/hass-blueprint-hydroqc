@@ -2,6 +2,11 @@
 
 **The work on this blueprint and the hydroqc components happens on [Gitlab](https://gitlab.com/hydroqc/). Please open issues or merge request there.**
 
+## Donations
+
+We put a lot of hearth and effort in this project, any contribution is greatly appreciated!
+
+[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=GRFRXT6L8GCR8)
 ## Installation
 
 Manual installation of blueprints is only supported from github or the Home assistant forums. You can manually import using the following github repo: 
